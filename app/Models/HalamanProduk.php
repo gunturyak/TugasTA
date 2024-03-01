@@ -8,20 +8,24 @@ use Illuminate\Support\Str;
 
 class HalamanProduk extends Model
 {
+    use HasFactory;
+
     protected $table = 'halaman_produk';
+    protected $primaryKey = 'id';
     protected $fillable = [
-        'produk','kategori','harga','stok','status','foto'
+        'produk', 'kategori', 'harga', 'stok', 'status', 'foto'
     ];
-    function handLeUploadFoto()
+
+    function handleUploadFoto()
     {
-        $this->handLeUploadFoto();
-        if (request()->hasFile('foto')){
+        $this->handleDelete();
+        if (request()->hasFile('foto')) {
             $foto = request()->file('foto');
-            $destination = "images/halaman_prduk";
+            $destination = "images/produk";
             $randomStr = Str::random(5);
-            $filename = $this->id . "-" . time() . "_" . $randomStr . "." . $foto->extension();
+            $filename = $this->id . "-" . time() . "-" . $randomStr . "." . $foto->extension();
             $url = $foto->storeAs($destination, $filename);
-            $this->foto = "" . $url;  //ini buat nampilin foto di frontend
+            $this->foto = "app/" . $url;
             $this->save();
         }
     }
@@ -34,7 +38,7 @@ class HalamanProduk extends Model
             if (file_exists($path)) {
                 unlink($path);
             }
+            return true;
         }
-        return true;
     }
 }
